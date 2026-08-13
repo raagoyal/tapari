@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>National Chai Tapri — Ambient 90s Radio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #120c0a;
+      --card-bg: #1c1410;
+      --accent-orange: #e05a2b;
+      --accent-yellow: #f4b41a;
+      --text-light: #f5ebe6;
+      --text-dim: #a39288;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      background: radial-gradient(circle at center, #261711 0%, #0d0705 100%);
+    }
+
+    /* Decorative Background Atmosphere */
+    .rain-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(0,0,0,0) 2px);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 90%;
+      max-width: 480px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Signboard Header */
+    .signboard {
+      border: 3px solid var(--accent-orange);
+      padding: 15px 20px;
+      border-radius: 8px;
+      background: rgba(18, 12, 10, 0.85);
+      box-shadow: 0 0 20px rgba(224, 90, 43, 0.2);
+      margin-bottom: 25px;
+    }
+
+    .signboard h2 {
+      font-family: 'Rozha One', serif;
+      font-size: 2.2rem;
+      color: var(--accent-yellow);
+      letter-spacing: 1px;
+    }
+
+    .signboard p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .on-air {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #555;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .on-air.active {
+      background-color: #ff3333;
+      box-shadow: 0 0 8px #ff3333;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Deck Player Styling */
+    .cassette-deck {
+      background: var(--card-bg);
+      border: 2px solid #33241c;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    }
+
+    /* Spinning Reels Animation */
+    .tape-window {
+      background: #0d0806;
+      border: 2px solid #2a1b14;
+      border-radius: 8px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reel {
+      width: 45px;
+      height: 45px;
+      border: 4px dashed var(--accent-orange);
+      border-radius: 50%;
+      transition: transform 0.1s linear;
+    }
+
+    .spinning {
+      animation: spin 3s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Track Metadata */
+    .track-info {
+      margin-bottom: 20px;
+    }
+
+    .song-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--text-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .artist-name {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-top: 5px;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background: #2a1c15;
+      border: 1px solid #422d22;
+      color: var(--text-light);
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--accent-orange);
+      border-color: var(--accent-orange);
+      color: #fff;
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+    }
+
+    /* Toggles / Extra Features */
+    .ambient-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #2a1b14;
+      padding-top: 15px;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .toggle-btn {
+      background: transparent;
+      border: 1px solid var(--accent-orange);
+      color: var(--accent-orange);
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    .toggle-btn.active {
+      background: var(--accent-orange);
+      color: #fff;
+    }
+
+    /* Hidden YouTube Container */
+    #yt-player-container {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="rain-overlay"></div>
+
+  <div class="container">
+    <!-- Signboard Header -->
+    <div class="signboard">
+      <h2>राष्ट्रीय चाय टपरी</h2>
+      <p><span class="on-air" id="onAirTag"></span> Ambient 90s Cassette Deck</p>
+    </div>
+
+    <!-- Cassette Player UI -->
+    <div class="cassette-deck">
+      <div class="tape-window">
+        <div class="reel" id="reelLeft"></div>
+        <div class="reel" id="reelRight"></div>
+      </div>
+
+      <div class="track-info">
+        <div class="song-title" id="songTitle">Press Play to Tune In</div>
+        <div class="artist-name" id="artistName">Chai Tapri Radio 90.0 FM</div>
+      </div>
+
+      <!-- Playback Buttons -->
+      <div class="controls">
+        <button class="btn" id="prevBtn">◄◄</button>
+        <button class="btn" id="playBtn">▶ Play</button>
+        <button class="btn" id="nextBtn">►►</button>
+      </div>
+
+      <!-- Extra Controls -->
+      <div class="ambient-bar">
+        <span>🌧️ Monsoon Rain Sound</span>
+        <button class="toggle-btn" id="rainToggle">OFF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden YouTube Player Container -->
+  <div id="yt-player-container">
+    <div id="player"></div>
+  </div>
+
+  <!-- YouTube Iframe API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script>
+    // Playlist Dataset (90s Hits via YouTube Video IDs)
+    const playlist = [
+      { id: '4A232kQG3g4', title: 'Pehla Nasha', artist: 'Udit Narayan, Sadhana Sargam' },
+      { id: '2V58296a2D0', title: 'Tujhe Dekha To', artist: 'Kumar Sanu, Lata Mangeshkar' },
+      { id: 'q1A9-G3XlE8', title: 'Chura Ke Dil Mera', artist: 'Kumar Sanu, Alka Yagnik' },
+      { id: 'a2f9Z_81XnU', title: 'Baazigar O Oaghabaz', artist: 'Kumar Sanu, Alka Yagnik' }
+    ];
+
+    let currentTrackIndex = 0;
+    let player;
+    let isPlaying = false;
+    let rainAudio = null;
+
+    // Initialize YouTube Player
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '0',
+        width: '0',
+        videoId: playlist[currentTrackIndex].id,
+        playerVars: {
+          'playsinline': 1,
+          'controls': 0
+        },
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    // UI Elements
+    const playBtn = document.getElementById('playBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const songTitle = document.getElementById('songTitle');
+    const artistName = document.getElementById('artistName');
+    const reelLeft = document.getElementById('reelLeft');
+    const reelRight = document.getElementById('reelRight');
+    const onAirTag = document.getElementById('onAirTag');
+    const rainToggle = document.getElementById('rainToggle');
+
+    function updateTrackUI() {
+      const track = playlist[currentTrackIndex];
+      songTitle.textContent = track.title;
+      artistName.textContent = track.artist;
+    }
+
+    function playTrack() {
+      if (!player) return;
+      player.loadVideoById(playlist[currentTrackIndex].id);
+      player.playVideo();
+      isPlaying = true;
+      updatePlayStateUI(true);
+    }
+
+    function togglePlay() {
+      if (!player) return;
+      if (isPlaying) {
+        player.pauseVideo();
+        isPlaying = false;
+        updatePlayStateUI(false);
+      } else {
+        player.playVideo();
+        isPlaying = true;
+        updatePlayStateUI(true);
+      }
+    }
+
+    function updatePlayStateUI(active) {
+      if (active) {
+        playBtn.textContent = '❚❚ Pause';
+        reelLeft.classList.add('spinning');
+        reelRight.classList.add('spinning');
+        onAirTag.classList.add('active');
+      } else {
+        playBtn.textContent = '▶ Play';
+        reelLeft.classList.remove('spinning');
+        reelRight.classList.remove('spinning');
+        onAirTag.classList.remove('active');
+      }
+    }
+
+    function onPlayerStateChange(event) {
+      // Auto-play next song when video ends
+      if (event.data === YT.PlayerState.ENDED) {
+        currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+        updateTrackUI();
+        playTrack();
+      }
+    }
+
+    // Event Listeners
+    playBtn.addEventListener('click', () => {
+      updateTrackUI();
+      togglePlay();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+      updateTrackUI();
+      playTrack();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+      updateTrackUI();
+      playTrack();
+    });
+
+    // Optional Ambient Rain Synthesizer (White noise generator using Web Audio API)
+    let audioCtx, noiseNode, gainNode;
+    let isRainPlaying = false;
+
+    function toggleRain() {
+      if (!isRainPlaying) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const bufferSize = audioCtx.sampleRate * 2;
+        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+
+        noiseNode = audioCtx.createBufferSource();
+        noiseNode.buffer = noiseBuffer;
+        noiseNode.loop = true;
+
+        // Lowpass filter to simulate rain texture
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 800;
+
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.05; // Gentle rain volume
+
+        noiseNode.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        noiseNode.start();
+        isRainPlaying = true;
+        rainToggle.textContent = 'ON';
+        rainToggle.classList.add('active');
+      } else {
+        if (noiseNode) noiseNode.stop();
+        isRainPlaying = false;
+        rainToggle.textContent = 'OFF';
+        rainToggle.classList.remove('active');
+      }
+    }
+
+    rainToggle.addEventListener('click', toggleRain);
+  </script>
+</body>
+</html>
