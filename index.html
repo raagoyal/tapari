@@ -3,20 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The B.Tech Batch — Ambient 90s Radio</title>
+  <title>The B.Tech Batch — Minimal Radio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Rozha+One&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg-dark: #120c0a;
-      --card-bg: rgba(28, 18, 14, 0.92);
-      --card-border: #523726;
-      --accent-orange: #ff5e28;
-      --accent-yellow: #f5b027;
-      --text-light: #ffffff;
-      --text-dim: #c7b2a6;
+      --neon-orange: #ff5500;
+      --vibrant-yellow: #ffb800;
+      --glass-bg: rgba(18, 12, 10, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.14);
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.65);
     }
 
     * {
@@ -29,21 +28,21 @@
     html, body {
       width: 100%;
       min-height: 100vh;
-      min-height: 100svh; /* Perfect sizing on mobile toolbars */
+      min-height: 100svh;
     }
 
     body {
-      background-color: var(--bg-dark);
-      color: var(--text-light);
-      font-family: 'Space Mono', monospace;
+      background-color: #0d0705;
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end; /* Places deck naturally above the car dashboard */
+      justify-content: flex-end;
       padding: 16px;
       overflow-x: hidden;
       
-      /* Mobile-optimized responsive background */
+      /* Comic Wallpaper */
       background-image: url('background.png');
       background-size: cover;
       background-position: center top;
@@ -51,186 +50,206 @@
       background-attachment: fixed;
     }
 
-    /* Subtle CRT scanline overlay */
-    .screen-effect {
+    /* Ambient Dark Gradient vignette for contrast */
+    .vignette {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0) 2px);
+      inset: 0;
+      background: radial-gradient(circle at center top, transparent 20%, rgba(0,0,0,0.7) 100%);
       pointer-events: none;
       z-index: 1;
     }
 
-    .container {
+    .player-wrapper {
       position: relative;
       z-index: 2;
       width: 100%;
-      max-width: 440px;
-      margin-bottom: 15px;
-    }
-
-    /* Signboard Header */
-    .signboard {
-      border: 2px solid var(--accent-orange);
-      padding: 10px 16px;
-      border-radius: 10px;
-      background: rgba(18, 10, 6, 0.88);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-      text-align: center;
+      max-width: 420px;
       margin-bottom: 12px;
     }
 
-    .signboard h2 {
+    /* Vibrant Minimal Glass Deck */
+    .player-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 20px 22px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 
+                  0 0 0 1px rgba(255, 85, 0, 0.2);
+    }
+
+    /* Minimal Header Tag */
+    .station-tag {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .tag-title {
       font-family: 'Rozha One', serif;
-      font-size: 1.6rem;
-      color: var(--accent-yellow);
+      font-size: 1.15rem;
+      color: var(--vibrant-yellow);
       letter-spacing: 0.5px;
-      line-height: 1.2;
     }
 
-    .signboard p {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      margin-top: 3px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
+    .badge-live {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
+      background: rgba(255, 85, 0, 0.15);
+      border: 1px solid rgba(255, 85, 0, 0.4);
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--neon-orange);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .on-air {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background-color: #555;
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: #555;
       border-radius: 50%;
     }
 
-    .on-air.active {
-      background-color: #ff3333;
-      box-shadow: 0 0 8px #ff3333;
-      animation: blink 1.4s infinite;
+    .live-dot.active {
+      background: var(--neon-orange);
+      box-shadow: 0 0 8px var(--neon-orange);
+      animation: pulse 1.5s infinite;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
     }
 
-    /* Cassette Player Deck */
-    .cassette-deck {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 2px solid var(--card-border);
-      border-radius: 14px;
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.85);
-      text-align: center;
+    /* Track Meta */
+    .track-details {
+      margin-bottom: 16px;
     }
 
-    /* Tape Window & Spinning Hubs */
-    .tape-window {
-      background: #090504;
-      border: 2px solid #332017;
-      border-radius: 8px;
-      height: 70px;
+    .track-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .track-artist {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Forward / Progress Seek Bar */
+    .progress-section {
+      margin-bottom: 18px;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      background: linear-gradient(90deg, var(--vibrant-yellow), var(--neon-orange));
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(255, 85, 0, 0.5);
+      transition: width 0.15s linear;
+    }
+
+    .time-stamps {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* Modern Minimal Controls */
+    .controls {
       display: flex;
       align-items: center;
-      justify-content: space-around;
-      margin-bottom: 14px;
-      position: relative;
+      justify-content: space-between;
+      padding: 0 8px;
     }
 
-    .reel {
-      width: 38px;
-      height: 38px;
-      border: 3px dashed var(--accent-orange);
-      border-radius: 50%;
-    }
-
-    .spinning {
-      animation: spin 2.8s linear infinite;
-    }
-
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Track Display Screen */
-    .track-info {
-      background: #0e0806;
-      border: 1px solid #332017;
-      border-radius: 6px;
-      padding: 8px 12px;
-      margin-bottom: 14px;
-    }
-
-    .song-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--accent-yellow);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .artist-name {
-      font-size: 0.72rem;
-      color: var(--text-dim);
-      margin-top: 3px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* Mechanical Tape Deck Controls */
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr 1.6fr 1fr;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .btn {
-      background: #251610;
-      border: 1px solid #4a2e1f;
-      color: var(--text-light);
-      padding: 12px 10px;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 700;
+    .btn-action {
+      background: none;
+      border: none;
+      color: var(--text-main);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      transition: background 0.15s, transform 0.1s;
-      user-select: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      transition: all 0.2s ease;
     }
 
-    .btn:active {
-      transform: scale(0.96);
+    .btn-action:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.15);
     }
 
-    /* Highlighted Main Play Button */
-    .btn-play {
-      background: var(--accent-orange);
-      border-color: #ff8154;
+    .btn-action svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* Vibrant Glowing Play Button */
+    .btn-main-play {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--vibrant-yellow), var(--neon-orange));
       color: #ffffff;
-      font-size: 1rem;
-      box-shadow: 0 4px 14px rgba(255, 94, 40, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(255, 85, 0, 0.45);
+      transition: all 0.2s ease;
     }
 
-    .btn-play:active {
-      background: #e04b16;
+    .btn-main-play:active {
+      transform: scale(0.92);
+      box-shadow: 0 4px 14px rgba(255, 85, 0, 0.3);
     }
 
-    /* Hidden YouTube Player */
+    .btn-main-play svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    /* Offscreen hidden player */
     #yt-player-container {
       position: fixed;
       left: -9999px;
@@ -240,61 +259,72 @@
       pointer-events: none;
     }
 
-    /* Desktop View Tweaks */
     @media (min-width: 600px) {
       body {
         justify-content: center;
         background-position: center center;
       }
-      .signboard h2 {
-        font-size: 2rem;
-      }
-      .cassette-deck {
-        padding: 22px;
-      }
-      .tape-window {
-        height: 85px;
-      }
-      .reel {
-        width: 44px;
-        height: 44px;
+      .player-card {
+        padding: 24px 26px;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="screen-effect"></div>
+  <div class="vignette"></div>
 
-  <div class="container">
-    <!-- Signboard Header -->
-    <div class="signboard">
-      <h2>The B.Tech Batch</h2>
-      <p><span class="on-air" id="onAirTag"></span> Engineering Classics '09–'13</p>
-    </div>
-
-    <!-- Cassette Player UI -->
-    <div class="cassette-deck">
-      <div class="tape-window">
-        <div class="reel" id="reelLeft"></div>
-        <div class="reel" id="reelRight"></div>
+  <div class="player-wrapper">
+    <div class="player-card">
+      
+      <!-- Minimal Header -->
+      <div class="station-tag">
+        <span class="tag-title">The B.Tech Batch</span>
+        <div class="badge-live">
+          <span class="live-dot" id="liveDot"></span>
+          <span>90.0 FM</span>
+        </div>
       </div>
 
-      <div class="track-info">
-        <div class="song-title" id="songTitle">Tap Play to Start</div>
-        <div class="artist-name" id="artistName">B.Tech Batch 90.0 FM</div>
+      <!-- Track Information -->
+      <div class="track-details">
+        <div class="track-title" id="songTitle">Tap Play to Start</div>
+        <div class="track-artist" id="artistName">Engineering Roadtrip Classics</div>
       </div>
 
-      <!-- Controls Grid -->
+      <!-- Forward / Seek Bar -->
+      <div class="progress-section">
+        <div class="progress-bar-container" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="time-stamps">
+          <span id="currentTime">0:00</span>
+          <span id="totalDuration">0:00</span>
+        </div>
+      </div>
+
+      <!-- Vibrant Minimal Controls -->
       <div class="controls">
-        <button class="btn" id="prevBtn" aria-label="Previous Track">◄◄ Prev</button>
-        <button class="btn btn-play" id="playBtn" aria-label="Play or Pause">▶ PLAY</button>
-        <button class="btn" id="nextBtn" aria-label="Next Track">Next ►►</button>
+        <!-- Prev Button -->
+        <button class="btn-action" id="prevBtn" aria-label="Previous">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+
+        <!-- Main Play Button -->
+        <button class="btn-main-play" id="playBtn" aria-label="Play or Pause">
+          <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+
+        <!-- Next Button -->
+        <button class="btn-action" id="nextBtn" aria-label="Next">
+          <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
       </div>
+
     </div>
   </div>
 
-  <!-- Offscreen YouTube Player -->
+  <!-- Offscreen YouTube Player Container -->
   <div id="yt-player-container">
     <div id="player"></div>
   </div>
@@ -308,6 +338,7 @@
     let player;
     let isPlayerReady = false;
     let isPlaying = false;
+    let progressInterval = null;
 
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
@@ -322,36 +353,43 @@
           'enablejsapi': 1
         },
         events: {
-          'onReady': () => {
-            isPlayerReady = true;
-          },
+          'onReady': () => { isPlayerReady = true; },
           'onStateChange': onPlayerStateChange
         }
       });
     }
 
+    // UI Elements
     const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const songTitle = document.getElementById('songTitle');
     const artistName = document.getElementById('artistName');
-    const reelLeft = document.getElementById('reelLeft');
-    const reelRight = document.getElementById('reelRight');
-    const onAirTag = document.getElementById('onAirTag');
+    const liveDot = document.getElementById('liveDot');
+    const progressBar = document.getElementById('progressBar');
+    const progressFill = document.getElementById('progressFill');
+    const currentTimeEl = document.getElementById('currentTime');
+    const totalDurationEl = document.getElementById('totalDuration');
 
+    // Format Seconds to MM:SS
+    function formatTime(seconds) {
+      if (isNaN(seconds) || seconds === null) return "0:00";
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    // Toggle Play/Pause
     function togglePlay() {
       if (!isPlayerReady || !player) return;
 
       if (isPlaying) {
         player.pauseVideo();
-        isPlaying = false;
-        updatePlayStateUI(false);
       } else {
         player.unMute();
         player.setVolume(100);
         player.playVideo();
-        isPlaying = true;
-        updatePlayStateUI(true);
       }
     }
 
@@ -373,34 +411,60 @@
       }
     }
 
-    function updatePlayStateUI(active) {
-      if (active) {
-        playBtn.textContent = '❚❚ PAUSE';
-        reelLeft.classList.add('spinning');
-        reelRight.classList.add('spinning');
-        onAirTag.classList.add('active');
-      } else {
-        playBtn.textContent = '▶ PLAY';
-        reelLeft.classList.remove('spinning');
-        reelRight.classList.remove('spinning');
-        onAirTag.classList.remove('active');
+    // Update Progress & Timestamps
+    function updateProgress() {
+      if (!player || !isPlaying) return;
+      const current = player.getCurrentTime() || 0;
+      const duration = player.getDuration() || 0;
+
+      if (duration > 0) {
+        const percent = (current / duration) * 100;
+        progressFill.style.width = `${percent}%`;
+        currentTimeEl.textContent = formatTime(current);
+        totalDurationEl.textContent = formatTime(duration);
       }
     }
 
+    // Click/Drag on Forward Bar to Seek
+    function seek(e) {
+      if (!player || !isPlayerReady) return;
+      const rect = progressBar.getBoundingClientRect();
+      const clickX = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+      const width = rect.width;
+      const percentage = Math.max(0, Math.min(1, clickX / width));
+      const duration = player.getDuration();
+
+      if (duration) {
+        const seekTime = duration * percentage;
+        player.seekTo(seekTime, true);
+        progressFill.style.width = `${percentage * 100}%`;
+        currentTimeEl.textContent = formatTime(seekTime);
+      }
+    }
+
+    progressBar.addEventListener('click', seek);
+
+    // Player State Change Handler
     function onPlayerStateChange(event) {
       if (event.data === YT.PlayerState.PLAYING) {
         isPlaying = true;
-        updatePlayStateUI(true);
+        playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'; // Pause SVG
+        liveDot.classList.add('active');
 
+        // Dynamic Title
         const videoData = player.getVideoData();
         if (videoData && videoData.title) {
-          let cleanTitle = videoData.title.split('|')[0].trim();
-          songTitle.textContent = cleanTitle;
+          songTitle.textContent = videoData.title.split('|')[0].trim();
           artistName.textContent = videoData.author || "B.Tech Batch Radio";
         }
-      } else if (event.data === YT.PlayerState.PAUSED) {
+
+        clearInterval(progressInterval);
+        progressInterval = setInterval(updateProgress, 500);
+      } else {
         isPlaying = false;
-        updatePlayStateUI(false);
+        playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>'; // Play SVG
+        liveDot.classList.remove('active');
+        clearInterval(progressInterval);
       }
     }
 
