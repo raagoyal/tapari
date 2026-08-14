@@ -273,17 +273,17 @@
       
       <!-- Minimal Header -->
       <div class="station-tag">
-        <span class="tag-title">The B.Tech Batch</span>
+        <span class="tag-title">Millennials' Playlist</span>
         <div class="badge-live">
           <span class="live-dot" id="liveDot"></span>
-          <span>20's FM</span>
+          <span>20s FM</span>
         </div>
       </div>
 
       <!-- Track Information -->
       <div class="track-details">
         <div class="track-title" id="songTitle">Tap Play to Start</div>
-        <div class="track-artist" id="artistName">Engineering Roadtrip Classics</div>
+        <div class="track-artist" id="artistName">Indian Maestros</div>
       </div>
 
       <!-- Forward / Seek Bar -->
@@ -449,7 +449,7 @@
         const videoData = player.getVideoData();
         if (videoData && videoData.title) {
           songTitle.textContent = videoData.title.split('|')[0].trim();
-          artistName.textContent = videoData.author || "B.Tech Batch 20's FM";
+          artistName.textContent = videoData.author || "Millennials' Playlist 20s FM";
         }
 
         clearInterval(progressInterval);
