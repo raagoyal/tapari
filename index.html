@@ -2,54 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>The B.Tech Batch — Ambient 90s Radio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   
   <style>
-    /* COLORS MATCHED TO THE "B.TECH BATCH" COMIC PALETTE */
     :root {
-      --bg-dark: #1a0f0a;
-      --card-bg: #2a1b14; /* Warm brownish from the car interior */
-      --card-border: #422d22;
-      --accent-orange: #e05a2b; /* Bold orange from the comic title */
-      --accent-yellow: #f4b41a; /* Warm yellow from the t-shirt */
-      --text-light: #f5ebe6; /* Creamy light text */
-      --text-dim: #a39288;
-      --tape-window-bg: #0d0806;
+      --bg-dark: #120c0a;
+      --card-bg: rgba(28, 18, 14, 0.92);
+      --card-border: #523726;
+      --accent-orange: #ff5e28;
+      --accent-yellow: #f5b027;
+      --text-light: #ffffff;
+      --text-dim: #c7b2a6;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100svh; /* Perfect sizing on mobile toolbars */
     }
 
     body {
       background-color: var(--bg-dark);
       color: var(--text-light);
       font-family: 'Space Mono', monospace;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end; /* Places deck naturally above the car dashboard */
+      padding: 16px;
       overflow-x: hidden;
       
-      /* INTEGRATING YOUR NEW COMIC WALLPAPER */
-      background-image: url('background.png'); /* Assumes file is named background.png */
+      /* Mobile-optimized responsive background */
+      background-image: url('background.png');
       background-size: cover;
-      background-position: center center;
+      background-position: center top;
       background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
-    /* Subtle screen scanline effect */
+    /* Subtle CRT scanline overlay */
     .screen-effect {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(0,0,0,0) 2px);
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0) 2px);
       pointer-events: none;
       z-index: 1;
     }
@@ -57,36 +63,42 @@
     .container {
       position: relative;
       z-index: 2;
-      width: 90%;
-      max-width: 480px;
-      text-align: center;
-      padding: 20px;
+      width: 100%;
+      max-width: 440px;
+      margin-bottom: 15px;
     }
 
     /* Signboard Header */
     .signboard {
-      border: 3px solid var(--accent-orange);
-      padding: 15px 20px;
-      border-radius: 8px;
-      /* Slightly translucent background to let image peek through */
-      background: rgba(42, 27, 20, 0.9); 
-      box-shadow: 0 0 25px rgba(224, 90, 43, 0.4);
-      margin-bottom: 25px;
+      border: 2px solid var(--accent-orange);
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: rgba(18, 10, 6, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+      text-align: center;
+      margin-bottom: 12px;
     }
 
     .signboard h2 {
       font-family: 'Rozha One', serif;
-      font-size: 2.2rem;
+      font-size: 1.6rem;
       color: var(--accent-yellow);
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
     }
 
     .signboard p {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-dim);
-      margin-top: 4px;
+      margin-top: 3px;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .on-air {
@@ -95,13 +107,12 @@
       height: 8px;
       background-color: #555;
       border-radius: 50%;
-      margin-right: 6px;
     }
 
     .on-air.active {
       background-color: #ff3333;
       box-shadow: 0 0 8px #ff3333;
-      animation: blink 1.5s infinite;
+      animation: blink 1.4s infinite;
     }
 
     @keyframes blink {
@@ -109,111 +120,145 @@
       50% { opacity: 0.3; }
     }
 
-    /* Deck Player Styling */
+    /* Cassette Player Deck */
     .cassette-deck {
-      background: rgba(42, 27, 20, 0.95); /* Slightly translucent */
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 2px solid var(--card-border);
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 15px 45px rgba(0,0,0,0.8);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.85);
+      text-align: center;
     }
 
-    /* Spinning Reels Animation */
+    /* Tape Window & Spinning Hubs */
     .tape-window {
-      background: var(--tape-window-bg);
-      border: 2px solid var(--card-border);
+      background: #090504;
+      border: 2px solid #332017;
       border-radius: 8px;
-      height: 90px;
+      height: 70px;
       display: flex;
       align-items: center;
       justify-content: space-around;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
       position: relative;
-      overflow: hidden;
     }
 
     .reel {
-      width: 45px;
-      height: 45px;
-      border: 4px dashed var(--accent-orange);
+      width: 38px;
+      height: 38px;
+      border: 3px dashed var(--accent-orange);
       border-radius: 50%;
-      transition: transform 0.1s linear;
     }
 
     .spinning {
-      animation: spin 3s linear infinite;
+      animation: spin 2.8s linear infinite;
     }
 
     @keyframes spin {
       100% { transform: rotate(360deg); }
     }
 
-    /* Track Metadata */
+    /* Track Display Screen */
     .track-info {
-      margin-bottom: 20px;
+      background: #0e0806;
+      border: 1px solid #332017;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
     }
 
     .song-title {
-      font-size: 1.0rem;
-      font-weight: bold;
-      color: var(--text-light);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent-yellow);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 5px;
     }
 
     .artist-name {
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* Controls */
+    /* Mechanical Tape Deck Controls */
     .controls {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1.6fr 1fr;
+      gap: 10px;
+      align-items: center;
     }
 
     .btn {
-      background: #1a0f0a;
-      border: 1px solid var(--card-border);
+      background: #251610;
+      border: 1px solid #4a2e1f;
       color: var(--text-light);
-      padding: 12px 20px;
-      border-radius: 6px;
+      padding: 12px 10px;
+      border-radius: 8px;
       font-family: inherit;
-      font-size: 1rem;
+      font-size: 0.9rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn:hover {
-      background: var(--accent-orange);
-      border-color: var(--accent-orange);
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s, transform 0.1s;
+      user-select: none;
     }
 
     .btn:active {
-      transform: translateY(2px);
-    }
-    
-    #playBtn {
-      border-color: var(--accent-orange);
-      color: var(--accent-orange);
+      transform: scale(0.96);
     }
 
-    /* Hidden YouTube Container */
+    /* Highlighted Main Play Button */
+    .btn-play {
+      background: var(--accent-orange);
+      border-color: #ff8154;
+      color: #ffffff;
+      font-size: 1rem;
+      box-shadow: 0 4px 14px rgba(255, 94, 40, 0.4);
+    }
+
+    .btn-play:active {
+      background: #e04b16;
+    }
+
+    /* Hidden YouTube Player */
     #yt-player-container {
       position: fixed;
       left: -9999px;
       bottom: 0;
       width: 200px;
       height: 200px;
-      opacity: 0;
       pointer-events: none;
+    }
+
+    /* Desktop View Tweaks */
+    @media (min-width: 600px) {
+      body {
+        justify-content: center;
+        background-position: center center;
+      }
+      .signboard h2 {
+        font-size: 2rem;
+      }
+      .cassette-deck {
+        padding: 22px;
+      }
+      .tape-window {
+        height: 85px;
+      }
+      .reel {
+        width: 44px;
+        height: 44px;
+      }
     }
   </style>
 </head>
@@ -236,21 +281,20 @@
       </div>
 
       <div class="track-info">
-        <div class="song-title" id="songTitle">Press Play to Load Tape</div>
-        <div class="artist-name" id="artistName">B.Tech Batch Radio 90.0 FM</div>
+        <div class="song-title" id="songTitle">Tap Play to Start</div>
+        <div class="artist-name" id="artistName">B.Tech Batch 90.0 FM</div>
       </div>
 
-      <!-- Playback Buttons -->
+      <!-- Controls Grid -->
       <div class="controls">
-        <button class="btn" id="prevBtn">◄◄</button>
-        <button class="btn" id="playBtn">▶ Play</button>
-        <button class="btn" id="nextBtn">►►</button>
+        <button class="btn" id="prevBtn" aria-label="Previous Track">◄◄ Prev</button>
+        <button class="btn btn-play" id="playBtn" aria-label="Play or Pause">▶ PLAY</button>
+        <button class="btn" id="nextBtn" aria-label="Next Track">Next ►►</button>
       </div>
-
     </div>
   </div>
 
-  <!-- Hidden YouTube Player Container (Offscreen) -->
+  <!-- Offscreen YouTube Player -->
   <div id="yt-player-container">
     <div id="player"></div>
   </div>
@@ -259,14 +303,12 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    // Playlist ID provided by the user
     const PLAYLIST_ID = 'PL_tHW6DB1saER9hFv3EniaXQw5ZCUBhpn';
 
     let player;
     let isPlayerReady = false;
     let isPlaying = false;
 
-    // Initialize the YouTube Player with your playlist
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
         height: '200',
@@ -280,13 +322,14 @@
           'enablejsapi': 1
         },
         events: {
-          'onReady': onPlayerReady,
+          'onReady': () => {
+            isPlayerReady = true;
+          },
           'onStateChange': onPlayerStateChange
         }
       });
     }
 
-    // UI Elements
     const playBtn = document.getElementById('playBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -296,12 +339,6 @@
     const reelRight = document.getElementById('reelRight');
     const onAirTag = document.getElementById('onAirTag');
 
-    function onPlayerReady(event) {
-      isPlayerReady = true;
-      songTitle.textContent = "Tape Loaded";
-      artistName.textContent = "National Chai Tapri Station";
-    }
-
     function togglePlay() {
       if (!isPlayerReady || !player) return;
 
@@ -310,7 +347,6 @@
         isPlaying = false;
         updatePlayStateUI(false);
       } else {
-        // Crucial for deployment sound: unmute and set volume on click
         player.unMute();
         player.setVolume(100);
         player.playVideo();
@@ -339,12 +375,12 @@
 
     function updatePlayStateUI(active) {
       if (active) {
-        playBtn.textContent = '❚❚ Pause';
+        playBtn.textContent = '❚❚ PAUSE';
         reelLeft.classList.add('spinning');
         reelRight.classList.add('spinning');
         onAirTag.classList.add('active');
       } else {
-        playBtn.textContent = '▶ Play';
+        playBtn.textContent = '▶ PLAY';
         reelLeft.classList.remove('spinning');
         reelRight.classList.remove('spinning');
         onAirTag.classList.remove('active');
@@ -352,18 +388,15 @@
     }
 
     function onPlayerStateChange(event) {
-      // When a video starts playing (State: 1 / PLAYING)
       if (event.data === YT.PlayerState.PLAYING) {
         isPlaying = true;
         updatePlayStateUI(true);
 
-        // Fetch current video title dynamically from YouTube metadata
         const videoData = player.getVideoData();
         if (videoData && videoData.title) {
-          // Tweak the title display for cleaner look
           let cleanTitle = videoData.title.split('|')[0].trim();
           songTitle.textContent = cleanTitle;
-          artistName.textContent = videoData.author || "National Chai Tapri Radio";
+          artistName.textContent = videoData.author || "B.Tech Batch Radio";
         }
       } else if (event.data === YT.PlayerState.PAUSED) {
         isPlaying = false;
@@ -371,7 +404,6 @@
       }
     }
 
-    // Button Listeners
     playBtn.addEventListener('click', togglePlay);
     nextBtn.addEventListener('click', nextTrack);
     prevBtn.addEventListener('click', prevTrack);
