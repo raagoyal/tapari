@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>National Chai Tapri — Ambient 90s Radio</title>
+  <title>The B.Tech Batch — Ambient 90s Radio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   
   <style>
+    /* COLORS MATCHED TO THE "B.TECH BATCH" COMIC PALETTE */
     :root {
-      --bg-dark: #120c0a;
-      --card-bg: #1c1410;
-      --accent-orange: #e05a2b;
-      --accent-yellow: #f4b41a;
-      --text-light: #f5ebe6;
+      --bg-dark: #1a0f0a;
+      --card-bg: #2a1b14; /* Warm brownish from the car interior */
+      --card-border: #422d22;
+      --accent-orange: #e05a2b; /* Bold orange from the comic title */
+      --accent-yellow: #f4b41a; /* Warm yellow from the t-shirt */
+      --text-light: #f5ebe6; /* Creamy light text */
       --text-dim: #a39288;
+      --tape-window-bg: #0d0806;
     }
 
     * {
@@ -34,11 +37,16 @@
       align-items: center;
       justify-content: center;
       overflow-x: hidden;
-      background: radial-gradient(circle at center, #261711 0%, #0d0705 100%);
+      
+      /* INTEGRATING YOUR NEW COMIC WALLPAPER */
+      background-image: url('background.png'); /* Assumes file is named background.png */
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
     }
 
-    /* Decorative Background Atmosphere */
-    .rain-overlay {
+    /* Subtle screen scanline effect */
+    .screen-effect {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(0,0,0,0) 2px);
@@ -60,8 +68,9 @@
       border: 3px solid var(--accent-orange);
       padding: 15px 20px;
       border-radius: 8px;
-      background: rgba(18, 12, 10, 0.85);
-      box-shadow: 0 0 20px rgba(224, 90, 43, 0.2);
+      /* Slightly translucent background to let image peek through */
+      background: rgba(42, 27, 20, 0.9); 
+      box-shadow: 0 0 25px rgba(224, 90, 43, 0.4);
       margin-bottom: 25px;
     }
 
@@ -102,17 +111,17 @@
 
     /* Deck Player Styling */
     .cassette-deck {
-      background: var(--card-bg);
-      border: 2px solid #33241c;
+      background: rgba(42, 27, 20, 0.95); /* Slightly translucent */
+      border: 2px solid var(--card-border);
       border-radius: 16px;
       padding: 25px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      box-shadow: 0 15px 45px rgba(0,0,0,0.8);
     }
 
     /* Spinning Reels Animation */
     .tape-window {
-      background: #0d0806;
-      border: 2px solid #2a1b14;
+      background: var(--tape-window-bg);
+      border: 2px solid var(--card-border);
       border-radius: 8px;
       height: 90px;
       display: flex;
@@ -145,18 +154,20 @@
     }
 
     .song-title {
-      font-size: 1.1rem;
+      font-size: 1.0rem;
       font-weight: bold;
       color: var(--text-light);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-bottom: 5px;
     }
 
     .artist-name {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-dim);
-      margin-top: 5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     /* Controls */
@@ -168,8 +179,8 @@
     }
 
     .btn {
-      background: #2a1c15;
-      border: 1px solid #422d22;
+      background: #1a0f0a;
+      border: 1px solid var(--card-border);
       color: var(--text-light);
       padding: 12px 20px;
       border-radius: 6px;
@@ -188,38 +199,19 @@
     .btn:active {
       transform: translateY(2px);
     }
-
-    /* Toggles / Extra Features */
-    .ambient-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid #2a1b14;
-      padding-top: 15px;
-      font-size: 0.8rem;
-      color: var(--text-dim);
-    }
-
-    .toggle-btn {
-      background: transparent;
-      border: 1px solid var(--accent-orange);
+    
+    #playBtn {
+      border-color: var(--accent-orange);
       color: var(--accent-orange);
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.75rem;
-    }
-
-    .toggle-btn.active {
-      background: var(--accent-orange);
-      color: #fff;
     }
 
     /* Hidden YouTube Container */
     #yt-player-container {
-      position: absolute;
-      width: 1px;
-      height: 1px;
+      position: fixed;
+      left: -9999px;
+      bottom: 0;
+      width: 200px;
+      height: 200px;
       opacity: 0;
       pointer-events: none;
     }
@@ -227,13 +219,13 @@
 </head>
 <body>
 
-  <div class="rain-overlay"></div>
+  <div class="screen-effect"></div>
 
   <div class="container">
     <!-- Signboard Header -->
     <div class="signboard">
-      <h2>राष्ट्रीय चाय टपरी</h2>
-      <p><span class="on-air" id="onAirTag"></span> Ambient 90s Cassette Deck</p>
+      <h2>The B.Tech Batch</h2>
+      <p><span class="on-air" id="onAirTag"></span> Engineering Classics '09–'13</p>
     </div>
 
     <!-- Cassette Player UI -->
@@ -244,8 +236,8 @@
       </div>
 
       <div class="track-info">
-        <div class="song-title" id="songTitle">Press Play to Tune In</div>
-        <div class="artist-name" id="artistName">Chai Tapri Radio 90.0 FM</div>
+        <div class="song-title" id="songTitle">Press Play to Load Tape</div>
+        <div class="artist-name" id="artistName">B.Tech Batch Radio 90.0 FM</div>
       </div>
 
       <!-- Playback Buttons -->
@@ -255,16 +247,11 @@
         <button class="btn" id="nextBtn">►►</button>
       </div>
 
-      <!-- Extra Controls -->
-      <div class="ambient-bar">
-        <span>🌧️ Monsoon Rain Sound</span>
-        <button class="toggle-btn" id="rainToggle">OFF</button>
-      </div>
     </div>
   </div>
 
-<!-- Hidden offscreen player container -->
-  <div style="position: fixed; left: -9999px; bottom: 0; width: 200px; height: 200px;">
+  <!-- Hidden YouTube Player Container (Offscreen) -->
+  <div id="yt-player-container">
     <div id="player"></div>
   </div>
 
@@ -272,6 +259,7 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
+    // Playlist ID provided by the user
     const PLAYLIST_ID = 'PL_tHW6DB1saER9hFv3EniaXQw5ZCUBhpn';
 
     let player;
@@ -288,7 +276,8 @@
           'list': PLAYLIST_ID,
           'playsinline': 1,
           'controls': 0,
-          'origin': window.location.origin
+          'origin': window.location.origin,
+          'enablejsapi': 1
         },
         events: {
           'onReady': onPlayerReady,
@@ -309,8 +298,8 @@
 
     function onPlayerReady(event) {
       isPlayerReady = true;
-      songTitle.textContent = "Ready to Play";
-      artistName.textContent = "National Chai Tapri 90.0 FM";
+      songTitle.textContent = "Tape Loaded";
+      artistName.textContent = "National Chai Tapri Station";
     }
 
     function togglePlay() {
@@ -321,6 +310,7 @@
         isPlaying = false;
         updatePlayStateUI(false);
       } else {
+        // Crucial for deployment sound: unmute and set volume on click
         player.unMute();
         player.setVolume(100);
         player.playVideo();
@@ -335,8 +325,6 @@
         player.unMute();
         player.setVolume(100);
         player.playVideo();
-        isPlaying = true;
-        updatePlayStateUI(true);
       }
     }
 
@@ -346,8 +334,6 @@
         player.unMute();
         player.setVolume(100);
         player.playVideo();
-        isPlaying = true;
-        updatePlayStateUI(true);
       }
     }
 
@@ -374,7 +360,9 @@
         // Fetch current video title dynamically from YouTube metadata
         const videoData = player.getVideoData();
         if (videoData && videoData.title) {
-          songTitle.textContent = videoData.title;
+          // Tweak the title display for cleaner look
+          let cleanTitle = videoData.title.split('|')[0].trim();
+          songTitle.textContent = cleanTitle;
           artistName.textContent = videoData.author || "National Chai Tapri Radio";
         }
       } else if (event.data === YT.PlayerState.PAUSED) {
