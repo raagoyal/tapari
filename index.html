@@ -311,6 +311,52 @@ function onPlayerReady(event) {
 
     // UI Elements
     const playBtn = document.getElementById('playBtn');
+    const prevBtn = document.<!-- Hidden offscreen (not zero size, so browsers don't kill audio) -->
+  <div style="position: fixed; left: -9999px; bottom: 0; width: 200px; height: 200px;">
+    <div id="player"></div>
+  </div>
+
+  <!-- YouTube Iframe API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script>
+    // Embed-friendly public audio streams
+    const playlist = [
+      { id: '4A232kQG3g4', title: 'Pehla Nasha', artist: 'Udit Narayan, Sadhana Sargam' },
+      { id: 'kJQP7kiw5Fk', title: 'Despacito / Test Stream', artist: 'Luis Fonsi' },
+      { id: 'fRh_vgS2dFE', title: 'Sorry', artist: 'Justin Bieber' }
+    ];
+
+    let currentTrackIndex = 0;
+    let player;
+    let isPlayerReady = false;
+    let isPlaying = false;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '200',
+        width: '200',
+        videoId: playlist[currentTrackIndex].id,
+        playerVars: {
+          'playsinline': 1,
+          'controls': 0,
+          'origin': window.location.origin
+        },
+        events: {
+          'onReady': () => {
+            isPlayerReady = true;
+          },
+          'onStateChange': onPlayerStateChange,
+          'onError': (e) => {
+            console.warn("Track cannot be embedded (Error code: " + e.data + "). Skipping to next...");
+            // Automatically skip to next if label blocks embedding
+            nextTrack();
+          }
+        }
+      });
+    }
+
+    const playBtn = document.getElementById('playBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const songTitle = document.getElementById('songTitle');
@@ -318,7 +364,6 @@ function onPlayerReady(event) {
     const reelLeft = document.getElementById('reelLeft');
     const reelRight = document.getElementById('reelRight');
     const onAirTag = document.getElementById('onAirTag');
-    const rainToggle = document.getElementById('rainToggle');
 
     function updateTrackUI() {
       const track = playlist[currentTrackIndex];
@@ -326,21 +371,43 @@ function onPlayerReady(event) {
       artistName.textContent = track.artist;
     }
 
-    function playTrack() {
-      if (!player) return;
-      player.loadVideoById(playlist[currentTrackIndex].id);
-      player.playVideo();
-      isPlaying = true;
-      updatePlayStateUI(true);
-    }
-
     function togglePlay() {
-      if (!player) return;
+      if (!isPlayerReady || !player) return;
+
       if (isPlaying) {
         player.pauseVideo();
         isPlaying = false;
         updatePlayStateUI(false);
       } else {
+        // Crucial: explicit unmute and max volume on user interaction
+        player.unMute();
+        player.setVolume(100);
+        player.playVideo();
+        isPlaying = true;
+        updatePlayStateUI(true);
+      }
+    }
+
+    function nextTrack() {
+      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+      updateTrackUI();
+      if (player && isPlayerReady) {
+        player.loadVideoById(playlist[currentTrackIndex].id);
+        player.unMute();
+        player.setVolume(100);
+        player.playVideo();
+        isPlaying = true;
+        updatePlayStateUI(true);
+      }
+    }
+
+    function prevTrack() {
+      currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+      updateTrackUI();
+      if (player && isPlayerReady) {
+        player.loadVideoById(playlist[currentTrackIndex].id);
+        player.unMute();
+        player.setVolume(100);
         player.playVideo();
         isPlaying = true;
         updatePlayStateUI(true);
@@ -362,76 +429,18 @@ function onPlayerReady(event) {
     }
 
     function onPlayerStateChange(event) {
-      // Auto-play next song when video ends
       if (event.data === YT.PlayerState.ENDED) {
-        currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-        updateTrackUI();
-        playTrack();
+        nextTrack();
       }
     }
 
-    // Event Listeners
     playBtn.addEventListener('click', () => {
       updateTrackUI();
       togglePlay();
     });
 
-    nextBtn.addEventListener('click', () => {
-      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-      updateTrackUI();
-      playTrack();
-    });
-
-    prevBtn.addEventListener('click', () => {
-      currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-      updateTrackUI();
-      playTrack();
-    });
-
-    // Optional Ambient Rain Synthesizer (White noise generator using Web Audio API)
-    let audioCtx, noiseNode, gainNode;
-    let isRainPlaying = false;
-
-    function toggleRain() {
-      if (!isRainPlaying) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const bufferSize = audioCtx.sampleRate * 2;
-        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const output = noiseBuffer.getChannelData(0);
-        
-        for (let i = 0; i < bufferSize; i++) {
-          output[i] = Math.random() * 2 - 1;
-        }
-
-        noiseNode = audioCtx.createBufferSource();
-        noiseNode.buffer = noiseBuffer;
-        noiseNode.loop = true;
-
-        // Lowpass filter to simulate rain texture
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 800;
-
-        gainNode = audioCtx.createGain();
-        gainNode.gain.value = 0.05; // Gentle rain volume
-
-        noiseNode.connect(filter);
-        filter.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
-        noiseNode.start();
-        isRainPlaying = true;
-        rainToggle.textContent = 'ON';
-        rainToggle.classList.add('active');
-      } else {
-        if (noiseNode) noiseNode.stop();
-        isRainPlaying = false;
-        rainToggle.textContent = 'OFF';
-        rainToggle.classList.remove('active');
-      }
-    }
-
-    rainToggle.addEventListener('click', toggleRain);
+    nextBtn.addEventListener('click', nextTrack);
+    prevBtn.addEventListener('click', prevTrack);
   </script>
 </body>
 </html>
