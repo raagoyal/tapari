@@ -263,55 +263,7 @@
     </div>
   </div>
 
-  <!-- Hidden YouTube Player Container -->
-  <div id="yt-player-container">
-    <div id="player"></div>
-  </div>
-
-  <!-- YouTube Iframe API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
-
-  <script>
-    // Playlist Dataset (90s Hits via YouTube Video IDs)
-    const playlist = [
-      { id: '4A232kQG3g4', title: 'Pehla Nasha', artist: 'Udit Narayan, Sadhana Sargam' },
-      { id: '2V58296a2D0', title: 'Tujhe Dekha To', artist: 'Kumar Sanu, Lata Mangeshkar' },
-      { id: 'q1A9-G3XlE8', title: 'Chura Ke Dil Mera', artist: 'Kumar Sanu, Alka Yagnik' },
-      { id: 'a2f9Z_81XnU', title: 'Baazigar O Oaghabaz', artist: 'Kumar Sanu, Alka Yagnik' }
-    ];
-
-    let currentTrackIndex = 0;
-    let player;
-    let isPlaying = false;
-    let rainAudio = null;
-
-    // Initialize YouTube Player
-   function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    height: '0',
-    width: '0',
-    videoId: playlist[currentTrackIndex].id,
-    playerVars: {
-      'playsinline': 1,
-      'controls': 0,
-      'autoplay': 1,
-      'enablejsapi': 1
-    },
-    events: {
-      'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange
-    }
-  });
-}
-
-function onPlayerReady(event) {
-  // Ensure the volume is explicitly set to max on ready
-  event.target.setVolume(100);
-}
-
-    // UI Elements
-    const playBtn = document.getElementById('playBtn');
-    const prevBtn = document.<!-- Hidden offscreen (not zero size, so browsers don't kill audio) -->
+<!-- Hidden offscreen player container -->
   <div style="position: fixed; left: -9999px; bottom: 0; width: 200px; height: 200px;">
     <div id="player"></div>
   </div>
@@ -320,42 +272,32 @@ function onPlayerReady(event) {
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    // Embed-friendly public audio streams
-    const playlist = [
-      { id: '4A232kQG3g4', title: 'Pehla Nasha', artist: 'Udit Narayan, Sadhana Sargam' },
-      { id: 'kJQP7kiw5Fk', title: 'Despacito / Test Stream', artist: 'Luis Fonsi' },
-      { id: 'fRh_vgS2dFE', title: 'Sorry', artist: 'Justin Bieber' }
-    ];
+    const PLAYLIST_ID = 'PL_tHW6DB1saER9hFv3EniaXQw5ZCUBhpn';
 
-    let currentTrackIndex = 0;
     let player;
     let isPlayerReady = false;
     let isPlaying = false;
 
+    // Initialize the YouTube Player with your playlist
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
         height: '200',
         width: '200',
-        videoId: playlist[currentTrackIndex].id,
         playerVars: {
+          'listType': 'playlist',
+          'list': PLAYLIST_ID,
           'playsinline': 1,
           'controls': 0,
           'origin': window.location.origin
         },
         events: {
-          'onReady': () => {
-            isPlayerReady = true;
-          },
-          'onStateChange': onPlayerStateChange,
-          'onError': (e) => {
-            console.warn("Track cannot be embedded (Error code: " + e.data + "). Skipping to next...");
-            // Automatically skip to next if label blocks embedding
-            nextTrack();
-          }
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
         }
       });
     }
 
+    // UI Elements
     const playBtn = document.getElementById('playBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -365,10 +307,10 @@ function onPlayerReady(event) {
     const reelRight = document.getElementById('reelRight');
     const onAirTag = document.getElementById('onAirTag');
 
-    function updateTrackUI() {
-      const track = playlist[currentTrackIndex];
-      songTitle.textContent = track.title;
-      artistName.textContent = track.artist;
+    function onPlayerReady(event) {
+      isPlayerReady = true;
+      songTitle.textContent = "Ready to Play";
+      artistName.textContent = "National Chai Tapri 90.0 FM";
     }
 
     function togglePlay() {
@@ -379,7 +321,6 @@ function onPlayerReady(event) {
         isPlaying = false;
         updatePlayStateUI(false);
       } else {
-        // Crucial: explicit unmute and max volume on user interaction
         player.unMute();
         player.setVolume(100);
         player.playVideo();
@@ -389,10 +330,8 @@ function onPlayerReady(event) {
     }
 
     function nextTrack() {
-      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-      updateTrackUI();
       if (player && isPlayerReady) {
-        player.loadVideoById(playlist[currentTrackIndex].id);
+        player.nextVideo();
         player.unMute();
         player.setVolume(100);
         player.playVideo();
@@ -402,10 +341,8 @@ function onPlayerReady(event) {
     }
 
     function prevTrack() {
-      currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-      updateTrackUI();
       if (player && isPlayerReady) {
-        player.loadVideoById(playlist[currentTrackIndex].id);
+        player.previousVideo();
         player.unMute();
         player.setVolume(100);
         player.playVideo();
@@ -429,16 +366,25 @@ function onPlayerReady(event) {
     }
 
     function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.ENDED) {
-        nextTrack();
+      // When a video starts playing (State: 1 / PLAYING)
+      if (event.data === YT.PlayerState.PLAYING) {
+        isPlaying = true;
+        updatePlayStateUI(true);
+
+        // Fetch current video title dynamically from YouTube metadata
+        const videoData = player.getVideoData();
+        if (videoData && videoData.title) {
+          songTitle.textContent = videoData.title;
+          artistName.textContent = videoData.author || "National Chai Tapri Radio";
+        }
+      } else if (event.data === YT.PlayerState.PAUSED) {
+        isPlaying = false;
+        updatePlayStateUI(false);
       }
     }
 
-    playBtn.addEventListener('click', () => {
-      updateTrackUI();
-      togglePlay();
-    });
-
+    // Button Listeners
+    playBtn.addEventListener('click', togglePlay);
     nextBtn.addEventListener('click', nextTrack);
     prevBtn.addEventListener('click', prevTrack);
   </script>
