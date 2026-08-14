@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The B.Tech Batch — Minimal Radio</title>
+  <title>The B.Tech Batch — 20's FM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Rozha+One&display=swap" rel="stylesheet">
@@ -12,10 +12,11 @@
     :root {
       --neon-orange: #ff5500;
       --vibrant-yellow: #ffb800;
-      --glass-bg: rgba(18, 12, 10, 0.78);
-      --glass-border: rgba(255, 255, 255, 0.14);
+      /* Ultra-sheer transparent glass background */
+      --glass-bg: rgba(15, 9, 6, 0.38);
+      --glass-border: rgba(255, 255, 255, 0.22);
       --text-main: #ffffff;
-      --text-muted: rgba(255, 255, 255, 0.65);
+      --text-muted: rgba(255, 255, 255, 0.75);
     }
 
     * {
@@ -50,33 +51,24 @@
       background-attachment: fixed;
     }
 
-    /* Ambient Dark Gradient vignette for contrast */
-    .vignette {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at center top, transparent 20%, rgba(0,0,0,0.7) 100%);
-      pointer-events: none;
-      z-index: 1;
-    }
-
     .player-wrapper {
       position: relative;
       z-index: 2;
       width: 100%;
       max-width: 420px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
-    /* Vibrant Minimal Glass Deck */
+    /* Ultra Transparent Frosted Glass Deck */
     .player-card {
       background: var(--glass-bg);
-      backdrop-filter: blur(20px) saturate(160%);
-      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
       border: 1px solid var(--glass-border);
       border-radius: 24px;
-      padding: 20px 22px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 
-                  0 0 0 1px rgba(255, 85, 0, 0.2);
+      padding: 18px 22px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 
+                  inset 0 1px 1px rgba(255, 255, 255, 0.25);
     }
 
     /* Minimal Header Tag */
@@ -84,27 +76,28 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .tag-title {
       font-family: 'Rozha One', serif;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       color: var(--vibrant-yellow);
       letter-spacing: 0.5px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
     }
 
     .badge-live {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 85, 0, 0.15);
-      border: 1px solid rgba(255, 85, 0, 0.4);
+      background: rgba(255, 85, 0, 0.25);
+      border: 1px solid rgba(255, 85, 0, 0.5);
       padding: 3px 8px;
       border-radius: 20px;
       font-size: 0.68rem;
       font-weight: 700;
-      color: var(--neon-orange);
+      color: #ff9d66;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -112,7 +105,7 @@
     .live-dot {
       width: 6px;
       height: 6px;
-      background: #555;
+      background: #777;
       border-radius: 50%;
     }
 
@@ -127,39 +120,41 @@
       50% { transform: scale(1.3); opacity: 0.6; }
     }
 
-    /* Track Meta */
+    /* Track Meta with High Readability Shadows */
     .track-details {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .track-title {
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       font-weight: 800;
       color: var(--text-main);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       line-height: 1.3;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
     }
 
     .track-artist {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--text-muted);
       margin-top: 2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
     }
 
     /* Forward / Progress Seek Bar */
     .progress-section {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .progress-bar-container {
       width: 100%;
       height: 6px;
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.22);
       border-radius: 6px;
       cursor: pointer;
       position: relative;
@@ -175,7 +170,7 @@
       width: 0%;
       background: linear-gradient(90deg, var(--vibrant-yellow), var(--neon-orange));
       border-radius: 6px;
-      box-shadow: 0 0 10px rgba(255, 85, 0, 0.5);
+      box-shadow: 0 0 12px rgba(255, 85, 0, 0.7);
       transition: width 0.15s linear;
     }
 
@@ -183,9 +178,10 @@
       display: flex;
       justify-content: space-between;
       font-size: 0.7rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-muted);
-      margin-top: 6px;
+      margin-top: 5px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
 
     /* Modern Minimal Controls */
@@ -193,12 +189,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 8px;
+      padding: 0 10px;
     }
 
     .btn-action {
-      background: none;
-      border: none;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       color: var(--text-main);
       cursor: pointer;
       display: flex;
@@ -207,13 +203,13 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(4px);
       transition: all 0.2s ease;
     }
 
     .btn-action:active {
       transform: scale(0.92);
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.25);
     }
 
     .btn-action svg {
@@ -222,7 +218,7 @@
       fill: currentColor;
     }
 
-    /* Vibrant Glowing Play Button */
+    /* Vibrant Glowing Main Play Button */
     .btn-main-play {
       width: 58px;
       height: 58px;
@@ -234,13 +230,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 24px rgba(255, 85, 0, 0.45);
+      box-shadow: 0 6px 20px rgba(255, 85, 0, 0.55);
       transition: all 0.2s ease;
     }
 
     .btn-main-play:active {
       transform: scale(0.92);
-      box-shadow: 0 4px 14px rgba(255, 85, 0, 0.3);
+      box-shadow: 0 3px 10px rgba(255, 85, 0, 0.4);
     }
 
     .btn-main-play svg {
@@ -265,14 +261,12 @@
         background-position: center center;
       }
       .player-card {
-        padding: 24px 26px;
+        padding: 22px 24px;
       }
     }
   </style>
 </head>
 <body>
-
-  <div class="vignette"></div>
 
   <div class="player-wrapper">
     <div class="player-card">
@@ -282,7 +276,7 @@
         <span class="tag-title">The B.Tech Batch</span>
         <div class="badge-live">
           <span class="live-dot" id="liveDot"></span>
-          <span>90.0 FM</span>
+          <span>20's FM</span>
         </div>
       </div>
 
@@ -455,7 +449,7 @@
         const videoData = player.getVideoData();
         if (videoData && videoData.title) {
           songTitle.textContent = videoData.title.split('|')[0].trim();
-          artistName.textContent = videoData.author || "B.Tech Batch Radio";
+          artistName.textContent = videoData.author || "B.Tech Batch 20's FM";
         }
 
         clearInterval(progressInterval);
